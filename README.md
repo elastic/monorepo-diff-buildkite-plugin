@@ -34,6 +34,7 @@ A path or a list of paths to be watched, This part specifies which directory sho
 
 #### `config`
 This is a sub-section that provides configuration for running commands or triggering another pipeline when changes occur in the specified path
+
     **Example**
        
        ```yaml
