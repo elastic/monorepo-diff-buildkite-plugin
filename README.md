@@ -31,26 +31,27 @@ If the version number is not provided then the most recent version of the plugin
 #### `path`
 A path or a list of paths to be watched, This part specifies which directory should be monitored.  It can also be a glob pattern. For example specify `path: "**/*.md"` to match all markdown files. A list of paths can be provided to trigger the desired pipeline or run command or even do a pipeline upload. 
 
- **Example**
-   
-   ```yaml
-   steps:
-     - label: "Triggering pipelines"
-       plugins:
-         - buildkite-plugins/monorepo-diff#v1.0.1:
-             diff: "git diff --name-only HEAD~1"
-             watch:
-               - path: "app/"
-                 config:
-                   command: "echo Hello World"
-               - path: "test/"
-                 config:
-                   trigger: "test-pipeline"
-   ```
 
 #### `config`
 This is a sub-section that provides configuration for running commands or triggering another pipeline when changes occur in the specified path
-Configuration supports 2 different step types.
+    **Example**
+       
+       ```yaml
+       steps:
+         - label: "Triggering pipelines"
+           plugins:
+             - buildkite-plugins/monorepo-diff#v1.0.1:
+                 diff: "git diff --name-only HEAD~1"
+                 watch:
+                   - path: "app/"
+                     config:
+                       command: "echo Hello World"
+                   - path: "test/"
+                     config:
+                       trigger: "test-pipeline"
+       ```
+       
+This Configuration supports 2 different step types
 
 - [Trigger](https://buildkite.com/docs/pipelines/trigger-step)
 
