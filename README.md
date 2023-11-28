@@ -35,11 +35,28 @@ A path or a list of paths to be watched, This part specifies which directory sho
 This is a sub-section that provides configuration for running commands or triggering another pipeline when changes occur in the specified path
 Configuration supports 2 different step types.
 
+
+   **Example**
+   
+   ```yaml
+   steps:
+     - label: "Triggering pipelines"
+       plugins:
+         - buildkite-plugins/monorepo-diff#v1.0.1:
+             diff: "git diff --name-only HEAD~1"
+             watch:
+               - path: "bar-service/"
+                 config:
+                   command: "echo deploy-bar"
+               - path: "foo-service/"
+                 config:
+                   trigger: "deploy-foo-service"
+   ```
+
 - [Trigger](https://buildkite.com/docs/pipelines/trigger-step)
 
     The configuration for the `trigger` step https://buildkite.com/docs/pipelines/trigger-step
-  
-    
+ 
     
     **Example**
     <br/>
@@ -51,14 +68,18 @@ Configuration supports 2 different step types.
         plugins:
           - buildkite-plugins/monorepo-diff#v1.0.1:
              watch:           
-              - path: app/cms/
+              - path: app/email/
                 config: # Required [trigger step configuration]
-                  trigger: cms-deploy # Required [trigger pipeline slug]
+                  trigger: deploy-pipeline # Required [trigger pipeline slug]
               - path:
-                  - services/email
-                  - assets/images/email
+                  - hooks/
+                  - .buildkite/pipelines/examples/
                 config:
-                  trigger: email-deploy
+                    trigger: "data-generator"
+                    label: ":package: Generate data"
+                    build:
+                      meta_data:
+                        release-version: "1.1"
     ```
       
 - [Command](https://buildkite.com/docs/pipelines/command-step)
@@ -78,18 +99,20 @@ Configuration supports 2 different step types.
             - buildkite-plugins/monorepo-diff#v1.0.1:
                 diff: "git diff --name-only HEAD~1"
                 watch:
-                  - path: app/cms/
+                  - path: app/test/
                     config:
-                      group: ":rocket: deployment"
-                      command: "netlify --production deploy"
-                      label: ":netlify: Deploy to production"
+                      group: ":rocket: Unit Tests"
+                      label: "Tests"
+                      command: "tests.sh"
+                      retry:
+                        automatic: true
                       agents:
-                        queue: "deploy"
+                        queue: "staging"
                       env:
                         - FOO=bar
                   - path: app/service/
                     config:
-                      command: "buildkite-agent pipeline upload ./frontend/.buildkite/pipeline.yaml"
+                      command: "tests.sh"
   
   ```
       
@@ -136,22 +159,6 @@ LATEST_BUILT_TAG=$(git describe --tags --match foo-service-* --abbrev=0)
 git diff --name-only "$LATEST_TAG"
 ```
 
-**Example**
-
-```yaml
-steps:
-  - label: "Triggering pipelines"
-    plugins:
-      - buildkite-plugins/monorepo-diff#v1.0.1:
-          diff: "git diff --name-only HEAD~1"
-          watch:
-            - path: "bar-service/"
-              config:
-                command: "echo deploy-bar"
-            - path: "foo-service/"
-              config:
-                trigger: "deploy-foo-service"
-```
 #### `interpolation` (optional)
 
 This controls the pipeline interpolation on upload, and defaults to `true`.
