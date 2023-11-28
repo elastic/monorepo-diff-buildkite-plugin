@@ -35,22 +35,22 @@ A path or a list of paths to be watched, This part specifies which directory sho
 #### `config`
 This is a sub-section that provides configuration for running commands or triggering another pipeline when changes occur in the specified path
 
-    **Example**
-       
-       ```yaml
-       steps:
-         - label: "Triggering pipelines"
-           plugins:
-             - buildkite-plugins/monorepo-diff#v1.0.1:
-                 diff: "git diff --name-only HEAD~1"
-                 watch:
-                   - path: "app/"
-                     config:
-                       command: "echo Hello World"
-                   - path: "test/"
-                     config:
-                       trigger: "test-pipeline"
-       ```
+      **Example**
+      <br/>
+        ```yaml
+        steps:
+          - label: "Triggering pipelines"
+            plugins:
+              - buildkite-plugins/monorepo-diff#v1.0.1:
+                  diff: "git diff --name-only HEAD~1"
+                  watch:
+                    - path: "app/"
+                      config:
+                        command: "echo Hello World"
+                    - path: "test/"
+                      config:
+                        trigger: "test-pipeline"
+        ```
        
 This Configuration supports 2 different step types
 
