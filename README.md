@@ -45,12 +45,12 @@ Configuration supports 2 different step types.
          - buildkite-plugins/monorepo-diff#v1.0.1:
              diff: "git diff --name-only HEAD~1"
              watch:
-               - path: "bar-service/"
+               - path: "app/"
                  config:
-                   command: "echo deploy-bar"
-               - path: "foo-service/"
+                   command: "echo Hello World"
+               - path: "test/"
                  config:
-                   trigger: "deploy-foo-service"
+                   trigger: "test-pipeline"
    ```
 
 - [Trigger](https://buildkite.com/docs/pipelines/trigger-step)
@@ -68,12 +68,12 @@ Configuration supports 2 different step types.
         plugins:
           - buildkite-plugins/monorepo-diff#v1.0.1:
              watch:           
-              - path: app/email/
+              - path: app/service/
                 config: # Required [trigger step configuration]
                   trigger: deploy-pipeline # Required [trigger pipeline slug]
               - path:
-                  - hooks/
-                  - .buildkite/pipelines/examples/
+                  - test/
+                  - app/service/api/
                 config:
                     trigger: "data-generator"
                     label: ":package: Generate data"
@@ -171,14 +171,14 @@ The object values provided in this configuration will be appended to `env` prope
 
 ```yaml
 steps:
-  - label: "Triggering pipelines"
+  - label: "Trigger a pipeline"
     plugins:
       - buildkite-plugins/monorepo-diff#v1.0.1:
           diff: "git diff --name-only HEAD~1"
           watch:
-            - path: "foo-service/"
+            - path: "app/service/aws/"
               config:
-                trigger: "deploy-foo-service"
+                trigger: "app-deploy"
                 label: "Triggered deploy"
                 build:
                   message: "Deploying foo service"
@@ -199,9 +199,9 @@ steps:
           diff: "git diff --name-only HEAD~1"
           log_level: "debug" # defaults to "info"
           watch:
-            - path: "foo-service/"
+            - path: "test/"
               config:
-                trigger: "deploy-foo-service"
+                trigger: "test-example-build"
  
 ```
 
@@ -237,8 +237,8 @@ steps:
             - command: "echo $(git rev-parse HEAD) > last_successful_build"
           watch:
             - path:
-                - "ops/terraform/"
-                - "ops/templates/terraform/"
+                - "binary/dist/"
+                - "binary/dist/linux/"
               config:
                 command: "buildkite-agent pipeline upload ops/.buildkite/pipeline.yml"
                 label: "Upload pipeline"
